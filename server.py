@@ -3,7 +3,7 @@ from flask_cors import CORS
 from pymongo import MongoClient
 from datetime import datetime, timezone
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')  # Configura la carpeta estática
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Conectar con MongoDB
@@ -25,7 +25,12 @@ def predict_traffic(ir1, ir2, ir3, ir4, ir5, ir6):
         return "Moderada"
     else:
         return "Baja"
-
+        
+# Ruta para servir el archivo index.html de React
+@app.route('/')
+def serve_react_app():
+    return app.send_static_file('index.html')  # Esto servirá el archivo React build
+    
 # Ruta para recibir datos del ESP32
 @app.route('/data', methods=['POST'])
 def receive_data():
